@@ -21,7 +21,13 @@
       }
     ]
   },
-
+  "services": [
+    {
+      "binding": "RPC_SERVICE",
+      "service": "worker",
+      "entrypoint": "SessionsRPC"
+    }
+  ],
   "observability": {
     "enabled": true
   },
