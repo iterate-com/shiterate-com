@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import Image from "next/image";
 import type {
   Session,
   WsMessage,
@@ -26,12 +27,12 @@ export function Cursors(props: { id: string }) {
     url: string;
   } | null>(null);
   const lastSentTimestamp = useRef(0);
-  const [messageState, dispatchMessage] = useReducer(messageReducer, {
+  const [, dispatchMessage] = useReducer(messageReducer, {
     in: "",
     out: "",
   });
-  const [highlightedIn, highlightIn] = useHighlight();
-  const [highlightedOut, highlightOut] = useHighlight();
+  const [, highlightIn] = useHighlight();
+  const [, highlightOut] = useHighlight();
 
   // Countdown timer state
   const [timeLeft, setTimeLeft] = useState<{
@@ -332,14 +333,6 @@ export function Cursors(props: { id: string }) {
     };
   }, []);
 
-  function sendMessage() {
-    highlightOut();
-    dispatchMessage({ type: "out", message: "message" });
-    wsRef.current?.send(
-      JSON.stringify({ type: "message", data: "Ping" } satisfies WsMessage)
-    );
-  }
-
   function handleDragStart(
     e: React.DragEvent,
     imageId: string,
@@ -528,9 +521,11 @@ export function Cursors(props: { id: string }) {
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
           >
-            <img
+            <Image
               src="/shiterate.png"
               alt="Shiterate"
+              width={96}
+              height={96}
               className="w-24 h-24 object-contain drop-shadow-md"
               draggable={false}
             />
@@ -546,9 +541,11 @@ export function Cursors(props: { id: string }) {
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
           >
-            <img
+            <Image
               src="/nustom_logo.jpg"
               alt="Nustom Logo"
+              width={96}
+              height={96}
               className="w-24 h-24 object-contain drop-shadow-md"
               draggable={false}
             />
@@ -637,9 +634,11 @@ export function Cursors(props: { id: string }) {
             transform: "translate(-50%, -50%)",
           }}
         >
-          <img
+          <Image
             src={currentUserCursor.draggedImage.url}
             alt="Dragged Image"
+            width={80}
+            height={80}
             className="w-20 h-20 object-contain"
           />
         </div>
@@ -663,9 +662,11 @@ export function Cursors(props: { id: string }) {
                   transform: "translate(-50%, -50%)",
                 }}
               >
-                <img
+                <Image
                   src={session.draggedImage.url}
                   alt="Dragged Image"
+                  width={80}
+                  height={80}
                   className="w-20 h-20 object-contain"
                 />
               </div>
@@ -700,9 +701,11 @@ export function Cursors(props: { id: string }) {
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
           >
-            <img
+            <Image
               src={image.url}
               alt="Persisted Image"
+              width={80}
+              height={80}
               className="w-20 h-20 object-contain"
               draggable={false}
             />
