@@ -1,4 +1,3 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { Cursors } from "@/app/cursor";
 import { nanoid } from "nanoid";
 
