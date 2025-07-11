@@ -1,7 +1,8 @@
 /**
  * For more details on how to configure Wrangler, refer to:
  * https://developers.cloudflare.com/workers/wrangler/configuration/
- */ {
+ */
+{
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "shiterate-com",
   "main": ".open-next/worker.js",
@@ -11,6 +12,16 @@
     "binding": "ASSETS",
     "directory": ".open-next/assets"
   },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SHITERATE_EMOJI",
+        "class_name": "shiterate_emoji",
+        "script_name": "worker"
+      }
+    ]
+  },
+
   "observability": {
     "enabled": true
   },
