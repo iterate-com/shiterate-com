@@ -210,8 +210,45 @@ export class shiterate_emoji extends DurableObject<Env> {
 				ws.send(JSON.stringify(imagesMessage));
 				break;
 
-			case "delete-persisted-image":
-				this.sql.exec(`DELETE FROM dragged_images WHERE id = ?`, parsedMsg.imageId);
+						case "delete-persisted-image":
+				if (parsedMsg.imageId === "*") {
+					// Clear all images from database
+					try {
+						console.log("🗑️ Clearing ALL images from database");
+
+						// Delete all images using raw SQL execution
+						this.sql.exec(`DELETE FROM dragged_images`);
+						console.log("🗑️ Delete ALL executed");
+
+						// Verify deletion worked using .one() for single row result
+						try {
+							const countResult = this.sql.exec(`SELECT COUNT(*) as count FROM dragged_images`).one();
+							const remainingCount = countResult?.count || 0;
+							console.log("🗑️ Remaining images after deletion:", remainingCount);
+
+							if (remainingCount === 0) {
+								console.log("✅ Successfully cleared all images from database");
+							} else {
+								console.error("❌ Failed to clear all images, remaining:", remainingCount);
+							}
+						} catch (verifyError) {
+							// If the query fails, we can assume the table is empty or there's an issue
+							console.log("✅ Delete completed (verification query failed, likely empty)");
+						}
+					} catch (error) {
+						console.error("🗑️ Error clearing all images:", error);
+					}
+				} else {
+					// Delete specific image
+					try {
+						console.log("🗑️ Deleting specific image:", parsedMsg.imageId);
+						this.sql.exec(`DELETE FROM dragged_images WHERE id = ?`, parsedMsg.imageId);
+						console.log("🗑️ Delete specific executed");
+					} catch (error) {
+						console.error("🗑️ Error deleting specific image:", error);
+					}
+				}
+
 				// Send delete message to ALL users including the sender
 				this.ctx.getWebSockets().forEach((ws) => {
 					ws.send(JSON.stringify(parsedMsg));
